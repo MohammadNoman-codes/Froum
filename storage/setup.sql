@@ -1,0 +1,15 @@
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title VARCHAR NOT NULL,
+    content VARCHAR NOT NULL,
+    user_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
