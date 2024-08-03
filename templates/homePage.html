@@ -12,21 +12,26 @@
         <h1>Mrfjm Forum</h1>
         <nav>
             <ul>
-                <li><a href="#">Home Page</a></li>
-                <!-- <li><a href="#">About</a></li>
-                <li><a href="#">Services</a></li>
-                <li><a href="#">Contact</a></li> -->
+                <li><a href="/home">Home</a></li>
+                <li><a href="#">Profile</a></li>
+                <li><a href="/">Logout</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section class="cards">
-            <div class="card">
-                <h2>Post Title</h2>
-                <p>Post content goes here.</p>
-                <a href="#" class="read-more">Read More</a>
-            </div>
+            {{if .NoPosts}}
+                <p>No posts were found in the database.</p>
+            {{else}}
+                {{range .Posts}}
+                <div class="card">
+                    <h2>{{.Title}}</h2>
+                    <p>{{.Content}}</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+                {{end}}
+            {{end}}
         </section>
     </main>
 
