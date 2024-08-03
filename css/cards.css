@@ -1,8 +1,8 @@
 .cards {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Center content vertically */
+    flex-direction: column;
+    align-items: center; /* Center cards horizontally */
+    padding: 20px;
 }
 
 .card {
@@ -13,10 +13,7 @@
     width: 60%;
     max-width: 600px;
     text-align: center;
-    height: 50%; /* Adjusted height */
-    display: flex; /* Added */
-    flex-direction: column; /* Added */
-    justify-content: center; /* Added */
+    margin-bottom: 20px; /* Space between cards */
 }
 
 .card h2 {

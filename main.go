@@ -25,6 +25,7 @@ func main() {
 	http.HandleFunc("/home", handlers.HomePageHandler)
 	http.HandleFunc("/signup", handlers.SignUpHandler) // Register SignUpHandler
 	http.HandleFunc("/signin", handlers.SignInHandler)
+	http.HandleFunc("/addpost", handlers.addPostHandler)
 
 	// Launch the server and open the default web browser
 	fmt.Println("Server listening on port http://localhost:1703")
