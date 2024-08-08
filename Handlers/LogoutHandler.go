@@ -41,5 +41,5 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// Redirect to the login page after logout
-	http.Redirect(w, r, "/login", http.StatusFound)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
