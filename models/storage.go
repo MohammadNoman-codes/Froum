@@ -1,8 +1,12 @@
 package models
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/hex"
+	"net/http"
 	"os"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -51,15 +55,16 @@ func CreateUser(email, username, password string) error {
 	return nil
 }
 
-func AuthenticateUser(email, password string) (bool, error) {
+func AuthenticateUser(email, password string, w http.ResponseWriter) (bool, error) {
 	db, err := sql.Open("sqlite3", "./storage/storage.db")
 	if err != nil {
 		return false, err
 	}
 	defer db.Close()
 
+	var userID int
 	var storedPassword string
-	err = db.QueryRow("SELECT password FROM users WHERE email = ?", email).Scan(&storedPassword)
+	err = db.QueryRow("SELECT id, password FROM users WHERE email = ?", email).Scan(&userID, &storedPassword)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false, nil // User not found
@@ -68,9 +73,32 @@ func AuthenticateUser(email, password string) (bool, error) {
 	}
 
 	// Compare passwords (in a real application, use bcrypt or similar for secure password storage)
-	if storedPassword == password {
-		return true, nil // Authentication successful
+	if storedPassword != password {
+		return false, nil // Passwords do not match
 	}
 
-	return false, nil // Passwords do not match
+	// Generate a session ID
+	sessionID := generateSessionID()
+
+	// Set the session ID as a cookie
+	cookie := &http.Cookie{
+		Name:    "session_id",
+		Value:   sessionID,
+		Expires: time.Now().Add(24 * time.Hour), // Cookie expires in 24 hours
+	}
+	http.SetCookie(w, cookie)
+
+	// Store the session in the database
+	_, err = db.Exec("INSERT INTO sessions (session_id, user_id, expires_at) VALUES (?, ?, ?)", sessionID, userID, time.Now().Add(24*time.Hour))
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil // Authentication and session creation successful
+}
+
+func generateSessionID() string {
+	bytes := make([]byte, 16)
+	rand.Read(bytes)
+	return hex.EncodeToString(bytes)
 }

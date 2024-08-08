@@ -1,4 +1,4 @@
--- Create users table
+-- Users Table
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     email TEXT UNIQUE NOT NULL,
@@ -6,61 +6,70 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL
 );
 
--- Create posts table
+-- Categories Table
+CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL
+);
+
+-- Posts Table
 CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title VARCHAR NOT NULL,
-    content VARCHAR NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
     user_id INTEGER,
-    like_id INTEGER,
-    dislike_id INTEGER,
-    Comm_ID INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- PostCategories Table (Join table for posts and categories)
+-- CREATE TABLE IF NOT EXISTS post_categories (
+--     post_id INTEGER,
+--     category_id INTEGER,
+--     FOREIGN KEY (post_id) REFERENCES posts(id),
+--     FOREIGN KEY (category_id) REFERENCES categories(id),
+--     PRIMARY KEY (post_id, category_id)
+-- );
+
+-- Comments Table
+CREATE TABLE IF NOT EXISTS comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT NOT NULL,
+    user_id INTEGER,
+    post_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (like_id) REFERENCES PostLike(id),
-    FOREIGN KEY (dislike_id) REFERENCES PostDislike(id),
-    FOREIGN KEY (Comm_ID) REFERENCES Comments(comment_ID)
+    FOREIGN KEY (post_id) REFERENCES posts(id)
 );
 
--- Create PostLike table
-CREATE TABLE IF NOT EXISTS PostLike (
+-- Likes Table (For both posts and comments)
+CREATE TABLE IF NOT EXISTS likes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    likes INTEGER,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Create PostDislike table
-CREATE TABLE IF NOT EXISTS PostDislike (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    dislikes INTEGER,
-    user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Create CommentLike table
-CREATE TABLE IF NOT EXISTS CommentLike (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    likes INTEGER,
-    user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Create CommentDislike table
-CREATE TABLE IF NOT EXISTS CommentDislike (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    dislikes INTEGER,
-    user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
--- Create Comments table
-CREATE TABLE IF NOT EXISTS Comments (
-    comment_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    content VARCHAR NOT NULL,
-    user_id INTEGER,
-    like_id INTEGER,
-    dislike_id INTEGER,
+    post_id INTEGER NULL,
+    comment_id INTEGER NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (like_id) REFERENCES CommentLike(id),
-    FOREIGN KEY (dislike_id) REFERENCES CommentDislike(id)
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(id)
+);
+
+-- Dislikes Table (For both posts and comments)
+CREATE TABLE IF NOT EXISTS dislikes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    post_id INTEGER NULL,
+    comment_id INTEGER NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(id)
+);
+
+-- Sessions Table
+CREATE TABLE IF NOT EXISTS sessions (
+    session_id TEXT PRIMARY KEY,
+    user_id INTEGER,
+    expires_at DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );

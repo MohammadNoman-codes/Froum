@@ -16,7 +16,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	authenticated, err := models.AuthenticateUser(email, password)
+	authenticated, err := models.AuthenticateUser(email, password, w)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Authentication error: %v", err), http.StatusInternalServerError)
 		return
