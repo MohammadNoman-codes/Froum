@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -101,4 +102,35 @@ func generateSessionID() string {
 	bytes := make([]byte, 16)
 	rand.Read(bytes)
 	return hex.EncodeToString(bytes)
+}
+
+func GetUserIDFromSession(r *http.Request) (int, error) {
+	// Retrieve the session ID from the cookie
+	cookie, err := r.Cookie("session_id")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			return 0, fmt.Errorf("session not found, please log in")
+		}
+		return 0, fmt.Errorf("failed to retrieve session: %v", err)
+	}
+	sessionID := cookie.Value
+
+	// Open the database
+	db, err := sql.Open("sqlite3", "./storage/storage.db")
+	if err != nil {
+		return 0, fmt.Errorf("failed to connect to database: %v", err)
+	}
+	defer db.Close()
+
+	// Query the database to get the user ID from the session ID
+	var userID int
+	err = db.QueryRow("SELECT user_id FROM sessions WHERE session_id = ?", sessionID).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, fmt.Errorf("session not found in the database")
+		}
+		return 0, fmt.Errorf("failed to retrieve session information: %v", err)
+	}
+
+	return userID, nil
 }

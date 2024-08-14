@@ -3,13 +3,12 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"forum/models"
 	"html/template"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-
 
 func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/addpost" {
@@ -20,6 +19,7 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		// Display the add post form
+		//r.Cookie() This will help me get the cookie and we will get the user form this
 		t, err := template.ParseFiles("templates/addPost.html")
 		if err != nil {
 			http.Error(w, "500: Internal Server Error (Parsing Template)", http.StatusInternalServerError)
@@ -36,7 +36,7 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err := addPostToDB(title, content)
+		err := addPostToDB(r, title, content)
 		if err != nil {
 			http.Error(w, "500: Internal Server Error (Adding Post to DB)", http.StatusInternalServerError)
 			return
@@ -48,14 +48,18 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addPostToDB(title, content string) error {
+func addPostToDB(r *http.Request, title, content string) error {
+	user, err := models.GetUserIDFromSession(r)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %v", err)
+	}
 	db, err := sql.Open("sqlite3", "storage/storage.db")
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %v", err)
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO posts (title, content) VALUES (?, ?)", title, content)
+	_, err = db.Exec("INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)", title, content, user)
 	if err != nil {
 		return fmt.Errorf("failed to insert post: %v", err)
 	}

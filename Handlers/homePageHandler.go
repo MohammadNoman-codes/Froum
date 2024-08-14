@@ -65,6 +65,7 @@ func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Serve error page if the request path is not "/home"
 	if r.URL.Path != "/home" {
+		
 		t, err := template.ParseFiles("templates/error.html")
 		if err != nil {
 			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
