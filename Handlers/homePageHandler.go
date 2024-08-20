@@ -86,16 +86,16 @@ func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(posts) == 0 {
-		err = t.Execute(w, map[string]interface{}{
-			"NoPosts": true,
-		})
-	} else {
-		err = t.Execute(w, map[string]interface{}{
-			"Posts": posts,
-		})
+	data := map[string]interface{}{
+		"Posts":            posts,
+		"SelectedCategory": category,
 	}
 
+	if len(posts) == 0 {
+		data["NoPosts"] = true
+	}
+
+	err = t.Execute(w, data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
