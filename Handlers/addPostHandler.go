@@ -19,7 +19,6 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		// Display the add post form
-		//r.Cookie() This will help me get the cookie and we will get the user form this
 		t, err := template.ParseFiles("templates/addPost.html")
 		if err != nil {
 			http.Error(w, "500: Internal Server Error (Parsing Template)", http.StatusInternalServerError)
@@ -30,13 +29,14 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 		// Process the form submission
 		title := r.FormValue("title")
 		content := r.FormValue("content")
+		category := r.FormValue("category") // Get the category from the form
 
-		if title == "" || content == "" {
-			http.Error(w, "400: Bad Request (Title or Content Missing)", http.StatusBadRequest)
+		if title == "" || content == "" || category == "" {
+			http.Error(w, "400: Bad Request (Title, Content, or Category Missing)", http.StatusBadRequest)
 			return
 		}
 
-		err := addPostToDB(r, title, content)
+		err := addPostToDB(r, title, content, category)
 		if err != nil {
 			http.Error(w, "500: Internal Server Error (Adding Post to DB)", http.StatusInternalServerError)
 			return
@@ -48,10 +48,10 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func addPostToDB(r *http.Request, title, content string) error {
+func addPostToDB(r *http.Request, title, content, category string) error {
 	user, err := models.GetUserIDFromSession(r)
 	if err != nil {
-		return fmt.Errorf("failed to connect to database: %v", err)
+		return fmt.Errorf("failed to retrieve user ID: %v", err)
 	}
 	db, err := sql.Open("sqlite3", "storage/storage.db")
 	if err != nil {
@@ -59,7 +59,7 @@ func addPostToDB(r *http.Request, title, content string) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)", title, content, user)
+	_, err = db.Exec("INSERT INTO posts (title, content, category, user_id) VALUES (?, ?, ?, ?)", title, content, category, user)
 	if err != nil {
 		return fmt.Errorf("failed to insert post: %v", err)
 	}

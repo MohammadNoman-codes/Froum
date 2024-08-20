@@ -11,30 +11,33 @@ import (
 )
 
 type Post struct {
-	ID      int
-	Title   string
-	Content string
+	ID       int
+	Title    string
+	Content  string
+	Category string
 }
 
-func FetchAllPosts() ([]Post, error) {
-	// Connect to the database
+// FetchPosts fetches posts based on the selected category.
+func FetchPosts(category string) ([]Post, error) {
 	db, err := sql.Open("sqlite3", "storage/storage.db")
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 	defer db.Close()
 
-	// Query the database to fetch all posts
-	rows, err := db.Query("SELECT id, title, content FROM posts")
+	var rows *sql.Rows
+	if category == "" {
+		rows, err = db.Query("SELECT id, title, content FROM posts")
+	} else {
+		rows, err = db.Query("SELECT id, title, content FROM posts WHERE category = ?", category)
+	}
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
 	defer rows.Close()
 
-	// Create an empty slice to store the posts
 	posts := []Post{}
-
-	// Iterate over the rows and populate the posts slice
 	for rows.Next() {
 		var post Post
 		err := rows.Scan(&post.ID, &post.Title, &post.Content)
@@ -43,29 +46,23 @@ func FetchAllPosts() ([]Post, error) {
 			return nil, fmt.Errorf("failed to scan row: %v", err)
 		}
 		posts = append(posts, post)
-
 	}
 
-	// Check for any errors during iteration
 	if err = rows.Err(); err != nil {
 		log.Printf("Row iteration error: %v", err)
 		return nil, fmt.Errorf("row iteration error: %v", err)
 	}
 
-	// Return the posts slice
 	return posts, nil
 }
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	// Only allow GET requests
 	if r.Method != http.MethodGet {
 		http.Error(w, "405: Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Serve error page if the request path is not "/home"
 	if r.URL.Path != "/home" {
-		
 		t, err := template.ParseFiles("templates/error.html")
 		if err != nil {
 			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
@@ -75,28 +72,27 @@ func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Parse the homePage template
+	category := r.URL.Query().Get("category")
+
 	t, err := template.ParseFiles("templates/homePage.html")
 	if err != nil {
-		http.Error(w, "500: Internal Server Error (This is the Parse File)", http.StatusInternalServerError)
+		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	Posts, err := FetchAllPosts()
+	posts, err := FetchPosts(category)
 	if err != nil {
-		http.Error(w, "500: Internal Server Error (This is because of Fetching all Posts)", http.StatusInternalServerError)
+		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	if len(Posts) == 0 {
-		// No posts found, pass a message or a flag to the template
+	if len(posts) == 0 {
 		err = t.Execute(w, map[string]interface{}{
 			"NoPosts": true,
 		})
 	} else {
-		// Execute the homePage template with the posts
 		err = t.Execute(w, map[string]interface{}{
-			"Posts": Posts,
+			"Posts": posts,
 		})
 	}
 
