@@ -3,18 +3,18 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
-	"html/template"
 	"log"
-	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type Post struct {
-	ID       int
-	Title    string
-	Content  string
-	Category string
+	ID            int
+	Title         string
+	Content       string
+	Category      string
+	LikesCount    int
+	DislikesCount int
 }
 
 // FetchPosts fetches posts based on the selected category.
@@ -27,9 +27,17 @@ func FetchPosts(category string) ([]Post, error) {
 
 	var rows *sql.Rows
 	if category == "" {
-		rows, err = db.Query("SELECT id, title, content FROM posts")
+		rows, err = db.Query(`
+			SELECT posts.id, posts.title, posts.content, 
+			       (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count, 
+			       (SELECT COUNT(*) FROM dislikes WHERE post_id = posts.id) AS dislikes_count
+			FROM posts`)
 	} else {
-		rows, err = db.Query("SELECT id, title, content FROM posts WHERE category = ?", category)
+		rows, err = db.Query(`
+			SELECT posts.id, posts.title, posts.content, 
+			       (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count, 
+			       (SELECT COUNT(*) FROM dislikes WHERE post_id = posts.id) AS dislikes_count
+			FROM posts WHERE category = ?`, category)
 	}
 
 	if err != nil {
@@ -40,7 +48,7 @@ func FetchPosts(category string) ([]Post, error) {
 	posts := []Post{}
 	for rows.Next() {
 		var post Post
-		err := rows.Scan(&post.ID, &post.Title, &post.Content)
+		err := rows.Scan(&post.ID, &post.Title, &post.Content, &post.LikesCount, &post.DislikesCount)
 		if err != nil {
 			log.Printf("Error scanning row: %v", err)
 			return nil, fmt.Errorf("failed to scan row: %v", err)
@@ -54,50 +62,4 @@ func FetchPosts(category string) ([]Post, error) {
 	}
 
 	return posts, nil
-}
-
-func HomePageHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "405: Method Not Allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	if r.URL.Path != "/home" {
-		t, err := template.ParseFiles("templates/error.html")
-		if err != nil {
-			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-		t.Execute(w, nil)
-		return
-	}
-
-	category := r.URL.Query().Get("category")
-
-	t, err := template.ParseFiles("templates/homePage.html")
-	if err != nil {
-		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	posts, err := FetchPosts(category)
-	if err != nil {
-		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	data := map[string]interface{}{
-		"Posts":            posts,
-		"SelectedCategory": category,
-	}
-
-	if len(posts) == 0 {
-		data["NoPosts"] = true
-	}
-
-	err = t.Execute(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 }
