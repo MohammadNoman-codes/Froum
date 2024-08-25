@@ -3,7 +3,9 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"log"
+	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -62,4 +64,50 @@ func FetchPosts(category string) ([]Post, error) {
 	}
 
 	return posts, nil
+}
+
+func HomePageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "405: Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if r.URL.Path != "/home" {
+		t, err := template.ParseFiles("templates/error.html")
+		if err != nil {
+			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		t.Execute(w, nil)
+		return
+	}
+
+	category := r.URL.Query().Get("category")
+
+	t, err := template.ParseFiles("templates/homePage.html")
+	if err != nil {
+		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	posts, err := FetchPosts(category)
+	if err != nil {
+		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := map[string]interface{}{
+		"Posts":            posts,
+		"SelectedCategory": category,
+	}
+
+	if len(posts) == 0 {
+		data["NoPosts"] = true
+	}
+
+	err = t.Execute(w, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
