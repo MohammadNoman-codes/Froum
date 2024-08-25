@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"forum/models"
 	"net/http"
+	"strconv"
 )
 
-func LikeHandler(w http.ResponseWriter, r *http.Request) {
+func UnlikeHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "405: Method Not Allowed", http.StatusMethodNotAllowed)
 		return
@@ -26,7 +27,13 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("INSERT INTO likes (user_id, post_id) VALUES (?, ?)", userID, postID)
+	postIDInt, err := strconv.Atoi(postID)
+	if err != nil {
+		http.Error(w, "400: Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	_, err = db.Exec("DELETE FROM likes WHERE user_id = ? AND post_id = ?", userID, postIDInt)
 	if err != nil {
 		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
 		return
@@ -34,4 +41,3 @@ func LikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/home", http.StatusSeeOther)
 }
-

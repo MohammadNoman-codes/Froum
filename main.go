@@ -29,6 +29,9 @@ func main() {
 	http.HandleFunc("/logout", handlers.LogoutHandler)
 	http.HandleFunc("/like", handlers.LikeHandler)
 	http.HandleFunc("/dislike", handlers.DislikeHandler)
+	http.HandleFunc("/undislike", handlers.UndislikeHandler)
+	http.HandleFunc("/unlike", handlers.UnlikeHandler)
+
 
 	// Launch the server and open the default web browser
 	fmt.Println("Server listening on port http://localhost:1703")

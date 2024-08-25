@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func DislikeHandler(w http.ResponseWriter, r *http.Request) {
+func UndislikeHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodPost {
         http.Error(w, "405: Method Not Allowed", http.StatusMethodNotAllowed)
         return
@@ -26,7 +26,7 @@ func DislikeHandler(w http.ResponseWriter, r *http.Request) {
     }
     defer db.Close()
 
-    _, err = db.Exec("INSERT INTO dislikes (user_id, post_id) VALUES (?, ?)", userID, postID)
+    _, err = db.Exec("DELETE FROM dislikes WHERE user_id = ? AND post_id = ?", userID, postID)
     if err != nil {
         http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
         return

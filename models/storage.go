@@ -134,3 +134,19 @@ func GetUserIDFromSession(r *http.Request) (int, error) {
 
 	return userID, nil
 }
+
+func HasUserLikedPost(userID, postID int) (bool, error) {
+    db, err := sql.Open("sqlite3", "./storage/storage.db")
+    if err != nil {
+        return false, err
+    }
+    defer db.Close()
+
+    var count int
+    err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = ?", userID, postID).Scan(&count)
+    if err != nil {
+        return false, err
+    }
+
+    return count > 0, nil
+}
