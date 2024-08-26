@@ -20,20 +20,35 @@ func main() {
 	http.Handle("/templates/", http.StripPrefix("/templates/", http.FileServer(http.Dir("./templates/"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css/"))))
 
-	// Register handlers for specific paths
+	// Public routes
 	http.HandleFunc("/", handlers.IndexHandler)
-	http.HandleFunc("/home", handlers.HomePageHandler)
 	http.HandleFunc("/signup", handlers.SignUpHandler) // Register SignUpHandler
 	http.HandleFunc("/signin", handlers.SignInHandler)
-	http.HandleFunc("/addpost", handlers.AddPostHandler)
-	http.HandleFunc("/logout", handlers.LogoutHandler)
-	http.HandleFunc("/like", handlers.LikeHandler)
-	http.HandleFunc("/dislike", handlers.DislikeHandler)
-	http.HandleFunc("/undislike", handlers.UndislikeHandler)
-	http.HandleFunc("/unlike", handlers.UnlikeHandler)
 
+	// Protected routes - wrapped with SessionMiddleware
+	protectedMux := http.NewServeMux()
+	protectedMux.Handle("/home", handlers.SessionMiddleware(http.HandlerFunc(handlers.HomePageHandler)))
+	protectedMux.Handle("/addpost", handlers.SessionMiddleware(http.HandlerFunc(handlers.AddPostHandler)))
+	protectedMux.Handle("/logout", handlers.SessionMiddleware(http.HandlerFunc(handlers.LogoutHandler)))
+	protectedMux.Handle("/like", handlers.SessionMiddleware(http.HandlerFunc(handlers.LikeHandler)))
+	protectedMux.Handle("/dislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.DislikeHandler)))
+	protectedMux.Handle("/undislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.UndislikeHandler)))
+	protectedMux.Handle("/unlike", handlers.SessionMiddleware(http.HandlerFunc(handlers.UnlikeHandler)))
+	protectedMux.Handle("/comments", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentsHandler)))
+	protectedMux.Handle("/addcomment", handlers.SessionMiddleware(http.HandlerFunc(handlers.AddCommentHandler)))
 
-	// Launch the server and open the default web browser
+	// Use the protected mux for routes that require authentication
+	http.Handle("/home", protectedMux)
+	http.Handle("/addpost", protectedMux)
+	http.Handle("/logout", protectedMux)
+	http.Handle("/like", protectedMux)
+	http.Handle("/dislike", protectedMux)
+	http.Handle("/undislike", protectedMux)
+	http.Handle("/unlike", protectedMux)
+	http.Handle("/comments", protectedMux)
+	http.Handle("/addcomment", protectedMux)
+
+	// Launch the server
 	fmt.Println("Server listening on port http://localhost:1703")
 
 	err = http.ListenAndServe(":1703", nil)
