@@ -42,38 +42,38 @@
             {{if .NoPosts}}
                 <p>No posts were found in the database.</p>
             {{else}}
-                {{range .Posts}}
-                <div class="card">
-                    <h2>{{.Title}}</h2>
-                    <p>{{.Content}}</p>
-                    <div class="likes-dislikes">
-                        {{if .UserHasLiked}}
-                        <form method="post" action="/unlike">
-                            <input type="hidden" name="post_id" value="{{.ID}}">
-                            <button type="submit">👍 Like ({{.LikesCount}})</button>
-                        </form>
-                        {{else}}
-                        <form method="post" action="/like">
-                            <input type="hidden" name="post_id" value="{{.ID}}">
-                            <button type="submit">👍 Like ({{.LikesCount}})</button>
-                        </form>
-                        {{end}}
-        
-                        {{if .UserHasDisliked}}
-                        <form method="post" action="/undislike">
-                            <input type="hidden" name="post_id" value="{{.ID}}">
-                            <button type="submit">👎 Dislike ({{.DislikesCount}})</button>
-                        </form>
-                        {{else}}
-                        <form method="post" action="/dislike">
-                            <input type="hidden" name="post_id" value="{{.ID}}">
-                            <button type="submit">👎 Dislike ({{.DislikesCount}})</button>
-                        </form>
-                        {{end}}
-                    </div>
-                    <a href="/comments?post_id={{.ID}}" class="read-more">Comments</a>
+            {{range .Posts}}
+            <div class="card">
+                <h2>{{.Title}}</h2>
+                <p>{{.Content}}</p>
+                <div class="likes-dislikes">
+                    {{if .UserHasLiked}}
+                    <form method="post" action="/unlike">
+                        <input type="hidden" name="post_id" value="{{.ID}}">
+                        <button type="submit">👍 Liked ({{.LikesCount}})</button>
+                    </form>
+                    {{else}}
+                    <form method="post" action="/like">
+                        <input type="hidden" name="post_id" value="{{.ID}}">
+                        <button type="submit">👍 Like ({{.LikesCount}})</button>
+                    </form>
+                    {{end}}
+            
+                    {{if .UserHasDisliked}}
+                    <form method="post" action="/undislike">
+                        <input type="hidden" name="post_id" value="{{.ID}}">
+                        <button type="submit">👎 Disliked ({{.DislikesCount}})</button>
+                    </form>
+                    {{else}}
+                    <form method="post" action="/dislike">
+                        <input type="hidden" name="post_id" value="{{.ID}}">
+                        <button type="submit">👎 Dislike ({{.DislikesCount}})</button>
+                    </form>
+                    {{end}}
                 </div>
-                {{end}}
+                <a href="/comments?post_id={{.ID}}" class="read-more">Comments</a>
+            </div>
+            {{end}}            
             {{end}}
         </section>
         
