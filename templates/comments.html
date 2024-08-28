@@ -27,7 +27,7 @@
                 {{range .Comments}}
                 <div class="comment">
                     <p>{{.Content}}</p>
-                    <small>Posted by User {{.UserID}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
+                    <small>Posted by {{.Username}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
                 </div>
                 {{end}}
             {{else}}
