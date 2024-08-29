@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="../css/homepage.css">
     <link rel="stylesheet" href="../css/cards.css"> <!-- New CSS file for cards -->
 </head>
+
 <body>
     <header>
         <h1>Mrfjm Forum</h1>
@@ -25,14 +27,16 @@
             <form method="get" action="/home">
                 <label for="category">Filter by Category:</label>
                 <select id="category" name="category">
-                    <option value="" {{if eq .SelectedCategory ""}}selected{{end}}>All</option>
-                    <option value="sports" {{if eq .SelectedCategory "sports"}}selected{{end}}>Sports</option>
-                    <option value="entertainment" {{if eq .SelectedCategory "entertainment"}}selected{{end}}>Entertainment</option>
-                    <option value="food" {{if eq .SelectedCategory "food"}}selected{{end}}>Food</option>
-                    <option value="cars" {{if eq .SelectedCategory "cars"}}selected{{end}}>Cars</option>
-                    <option value="technology" {{if eq .SelectedCategory "technology"}}selected{{end}}>Technology</option>
-                    <option value="music" {{if eq .SelectedCategory "music"}}selected{{end}}>Music</option>
-                    <option value="travel" {{if eq .SelectedCategory "travel"}}selected{{end}}>Travel</option>
+                    <option value="" {{if eq .SelectedCategory "" }}selected{{end}}>All</option>
+                    <option value="sports" {{if eq .SelectedCategory "sports" }}selected{{end}}>Sports</option>
+                    <option value="entertainment" {{if eq .SelectedCategory "entertainment" }}selected{{end}}>
+                        Entertainment</option>
+                    <option value="food" {{if eq .SelectedCategory "food" }}selected{{end}}>Food</option>
+                    <option value="cars" {{if eq .SelectedCategory "cars" }}selected{{end}}>Cars</option>
+                    <option value="technology" {{if eq .SelectedCategory "technology" }}selected{{end}}>Technology
+                    </option>
+                    <option value="music" {{if eq .SelectedCategory "music" }}selected{{end}}>Music</option>
+                    <option value="travel" {{if eq .SelectedCategory "travel" }}selected{{end}}>Travel</option>
                 </select>
                 <button type="submit">Apply Filter</button>
             </form>
@@ -40,7 +44,7 @@
 
         <section class="cards">
             {{if .NoPosts}}
-                <p>No posts were found in the database.</p>
+            <p>No posts were found in the database.</p>
             {{else}}
             {{range .Posts}}
             <div class="card">
@@ -58,10 +62,10 @@
                         <button type="submit">👍 Like ({{.LikesCount}})</button>
                     </form>
                     {{end}}
-            
+
                     {{if .UserHasDisliked}}
                     <form method="post" action="/undislike">
-                        Mrfjm Forum            <input type="hidden" name="post_id" value="{{.ID}}">
+                        <input type="hidden" name="post_id" value="{{.ID}}">
                         <button type="submit">👎 Disliked ({{.DislikesCount}})</button>
                     </form>
                     {{else}}
@@ -73,14 +77,15 @@
                 </div>
                 <a href="/comments?post_id={{.ID}}" class="read-more">Comments</a>
             </div>
-            {{end}}            
+            {{end}}
             {{end}}
         </section>
-        
+
     </main>
 
     <footer>
         <p>&copy; 2024 Mrfjm Website. All rights reserved.</p>
     </footer>
 </body>
+
 </html>
