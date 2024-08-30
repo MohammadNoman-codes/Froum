@@ -31,6 +31,7 @@ func main() {
 	protectedMux := http.NewServeMux()
 	protectedMux.Handle("/home", handlers.SessionMiddleware(http.HandlerFunc(handlers.HomePageHandler)))
 	protectedMux.Handle("/addpost", handlers.SessionMiddleware(http.HandlerFunc(handlers.AddPostHandler)))
+	protectedMux.Handle("/profile", handlers.SessionMiddleware(http.HandlerFunc(handlers.ProfileHandler))) // Working on it
 	protectedMux.Handle("/logout", handlers.SessionMiddleware(http.HandlerFunc(handlers.LogoutHandler)))
 	protectedMux.Handle("/like", handlers.SessionMiddleware(http.HandlerFunc(handlers.LikeHandler)))
 	protectedMux.Handle("/dislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.DislikeHandler)))
@@ -42,6 +43,7 @@ func main() {
 	// Use the protected mux for routes that require authentication
 	http.Handle("/home", protectedMux)
 	http.Handle("/addpost", protectedMux)
+	http.Handle("/profile", protectedMux)
 	http.Handle("/logout", protectedMux)
 	http.Handle("/like", protectedMux)
 	http.Handle("/dislike", protectedMux)
