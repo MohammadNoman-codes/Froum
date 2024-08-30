@@ -22,8 +22,10 @@ func main() {
 
 	// Public routes
 	http.HandleFunc("/", handlers.IndexHandler)
-	http.HandleFunc("/signup", handlers.SignUpHandler) // Register SignUpHandler
+	http.HandleFunc("/signup", handlers.SignUpHandler)
 	http.HandleFunc("/signin", handlers.SignInHandler)
+	http.HandleFunc("/guest", handlers.GuestPageHandler)
+	http.HandleFunc("/guestcomments", handlers.GuestCommentsHandler)
 
 	// Protected routes - wrapped with SessionMiddleware
 	protectedMux := http.NewServeMux()

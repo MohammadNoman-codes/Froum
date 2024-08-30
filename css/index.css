@@ -11,6 +11,7 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	height: 100vh;
 	margin: -20px 0 50px;
+	overflow: hidden;
 }
 
 h1 {
@@ -246,4 +247,12 @@ footer i {
 footer a {
     color: #3c97bf;
     text-decoration: none;
+}
+
+.guest-form-container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
 }

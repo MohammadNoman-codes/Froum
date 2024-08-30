@@ -38,13 +38,19 @@
                 </div>
                 <div class="overlay-panel overlay-right">
                     <h1>Hello, Friend!</h1>
-                    <p>Enter your personal details and start journey with us</p>
+                    <p>Enter your personal details and start your journey with us</p>
                     <button class="ghost" id="signUp">Sign Up</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Add a form to handle the guest access -->
+     <div id="guest-form-container">
+    <form action="/guest" method="GET" style="text-align: center; margin-top: 20px; background-color: #f6f5f7;">
+        <button type="submit">Join As A Guest</button>
+    </form>
+    </div>
     <script>
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');

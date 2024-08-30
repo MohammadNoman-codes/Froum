@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments on {{.PostTitle}}</title>
+    <link rel="stylesheet" href="../css/comments.css">
+</head>
+<body>
+    <header>
+        <h1>{{.PostTitle}}</h1>
+    </header>
+
+    <main>
+        {{if .Comments}}
+        <ul>
+            {{range .Comments}}
+            <li>
+                <p><strong>{{.Username}}</strong>: {{.Content}}</p>
+                <small>{{.CreatedAt}}</small>
+            </li>
+            {{end}}
+        </ul>
+        {{else}}
+        <p>No comments available for this post.</p>
+        {{end}}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mrfjm Website. All rights reserved.</p>
+    </footer>
+</body>
+</html>
