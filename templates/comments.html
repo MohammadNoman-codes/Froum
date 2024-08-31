@@ -27,7 +27,19 @@
                 {{range .Comments}}
                 <div class="comment">
                     <p>{{.Content}}</p>
+                    <p>This is the coment ID: {{.ID}}</p>
                     <small>Posted by {{.Username}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
+                    <br>
+                    <form method="post" action="/comment/like">
+                        <input type="hidden" name="ID" value="{{.ID}}">
+                        <button type="submit">👍 Liked ()</button>
+                    </form>
+                    <br>
+                    <br>
+                    <form method="post" action="/comment/dislike">
+                        <input type="hidden" name="ID" value="{{.ID}}">
+                        <button type="submit">👎 Dislike ()</button>
+                    </form>
                 </div>
                 {{end}}
             {{else}}

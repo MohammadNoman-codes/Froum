@@ -13,7 +13,7 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentID := r.FormValue("comment_id")
+	commentID := r.FormValue("ID")
 	userID, err := models.GetUserIDFromSession(r) // Get the logged-in user ID
 	if err != nil {
 		http.Error(w, "Please log in to perform this action", http.StatusUnauthorized)
@@ -37,7 +37,7 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	defer tx.Rollback()
 
 	// Remove like if it exists
-	_, err = tx.Exec("DELETE FROM comment_likes WHERE user_id = ? AND comment_id = ?", userID, commentID)
+	_, err = tx.Exec("DELETE FROM likes WHERE user_id = ? AND comment_id = ?", userID, commentID)
 	if err != nil {
 		log.Println("Error deleting like:", err)
 		http.Error(w, "Failed to remove like", http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Insert dislike
-	_, err = tx.Exec("INSERT INTO comment_dislikes (user_id, comment_id) VALUES (?, ?)", userID, commentID)
+	_, err = tx.Exec("INSERT INTO dislikes (user_id, comment_id) VALUES (?, ?)", userID, commentID)
 	if err != nil {
 		log.Println("Error inserting dislike:", err)
 		http.Error(w, "Failed to add dislike", http.StatusInternalServerError)
