@@ -40,6 +40,12 @@ func main() {
 	protectedMux.Handle("/comments", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentsHandler)))
 	protectedMux.Handle("/addcomment", handlers.SessionMiddleware(http.HandlerFunc(handlers.AddCommentHandler)))
 
+	// New routes for comment like/dislike functionality
+	protectedMux.Handle("/comment/like", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentLikeHandler)))
+	protectedMux.Handle("/comment/dislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentDislikeHandler)))
+	protectedMux.Handle("/comment/unlike", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentUnlikeHandler)))
+	protectedMux.Handle("/comment/undislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentUnDislikeHandler)))
+
 	// Use the protected mux for routes that require authentication
 	http.Handle("/home", protectedMux)
 	http.Handle("/addpost", protectedMux)
@@ -51,6 +57,10 @@ func main() {
 	http.Handle("/unlike", protectedMux)
 	http.Handle("/comments", protectedMux)
 	http.Handle("/addcomment", protectedMux)
+	http.Handle("/comment/like", protectedMux)
+	http.Handle("/comment/dislike", protectedMux)
+	http.Handle("/comment/unlike", protectedMux)
+	http.Handle("/comment/undislike", protectedMux)
 
 	// Launch the server
 	fmt.Println("Server listening on port http://localhost:1703")

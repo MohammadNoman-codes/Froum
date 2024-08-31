@@ -28,6 +28,34 @@
                 <div class="comment">
                     <p>{{.Content}}</p>
                     <small>Posted by {{.Username}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
+                    <div class="likes-dislikes">
+                        <!-- Check if the variables are correctly being passed -->
+                        {{if .UserHasLiked}}
+                        <form method="post" action="/comment/unlike">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👍 Liked ({{.LikesCount}})</button>
+                        </form>
+                        {{else}}
+                        <form method="post" action="/comment/like">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👍 Like ({{.LikesCount}})</button>
+                        </form>
+                        {{end}}
+
+                        {{if .UserHasDisliked}}
+                        <form method="post" action="/comment/undislike">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👎 Disliked ({{.DislikesCount}})</button>
+                        </form>
+                        {{else}}
+                        <form method="post" action="/comment/dislike">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👎 Dislike ({{.DislikesCount}})</button>
+                        </form>
+                        {{end}}
+                    </div>
+                    <!-- Add plain text to ensure this part is rendering -->
+                    <p>Debug: Likes - {{.LikesCount}}, Dislikes - {{.DislikesCount}}</p>
                 </div>
                 {{end}}
             {{else}}
