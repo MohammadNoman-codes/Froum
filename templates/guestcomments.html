@@ -28,17 +28,34 @@
                 <div class="comment">
                     <p>{{.Content}}</p>
                     <small>Posted by {{.Username}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
+                    <div class="likes-dislikes">
+                        <form method="post" action="#" onsubmit="preventAction(event)">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👍 Like ({{.CLikes}})</button>
+                        </form>
+    
+                        <form method="post" action="#" onsubmit="preventAction(event)">
+                            <input type="hidden" name="comment_id" value="{{.ID}}">
+                            <button type="submit">👎 Dislike ({{.CDislikes}})</button>
+                        </form>
+                    </div>
                 </div>
                 {{end}}
             {{else}}
                 <p>No comments yet. Be the first to comment!</p>
             {{end}}
         </section>
-
     </main>
 
     <footer>
         <p>&copy; 2024 Mrfjm Website. All rights reserved.</p>
     </footer>
+
+    <script>
+        function preventAction(event) {
+            event.preventDefault();
+            // Additional logic to handle likes/dislikes without refreshing the page
+        }
+    </script>
 </body>
 </html>

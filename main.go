@@ -39,8 +39,6 @@ func main() {
 	protectedMux.Handle("/unlike", handlers.SessionMiddleware(http.HandlerFunc(handlers.UnlikeHandler)))
 	protectedMux.Handle("/comments", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentsHandler)))
 	protectedMux.Handle("/addcomment", handlers.SessionMiddleware(http.HandlerFunc(handlers.AddCommentHandler)))
-
-	// New routes for comment like/dislike functionality
 	protectedMux.Handle("/comment/like", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentLikeHandler)))
 	protectedMux.Handle("/comment/dislike", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentDislikeHandler)))
 	protectedMux.Handle("/comment/unlike", handlers.SessionMiddleware(http.HandlerFunc(handlers.CommentUnlikeHandler)))
