@@ -50,3 +50,29 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+/* Like and Dislike button styles */
+.likes-dislikes {
+    display: flex;
+    gap: 10px; /* Add spacing between the buttons */
+    margin-top: 10px; /* Add space above the like/dislike buttons */
+}
+
+.likes-dislikes form {
+    margin: 0; /* Remove default form margin */
+}
+
+.likes-dislikes button {
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.likes-dislikes button:hover {
+    background-color: #2980b9;
+}
