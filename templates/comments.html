@@ -24,22 +24,20 @@
     <main>
         <section class="comments">
             {{if .Comments}}
-            
-
                 {{range .Comments}}
                 <div class="comment">
                     <p>{{.Content}}</p>
-                    
-
                     <small>Posted by {{.Username}} on {{.CreatedAt.Format "02 Jan 2006 15:04"}}</small>
                     <br>
                     <form method="post" action="/comment/like">
                         <input type="hidden" name="ID" value="{{.ID}}">
+                        <input type="hidden" name="post_id" value="{{$.PostID}}">
                         <button type="submit">👍 Liked ({{.CLikes}})</button>
                     </form>
                     <br>
                     <form method="post" action="/comment/dislike">
                         <input type="hidden" name="ID" value="{{.ID}}">
+                        <input type="hidden" name="post_id" value="{{$.PostID}}">
                         <button type="submit">👎 Dislike ({{.CDislikes}})</button>
                     </form>
                 </div>

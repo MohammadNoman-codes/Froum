@@ -14,6 +14,7 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	commentID := r.FormValue("ID")
+	postID := r.FormValue("post_id")
 	userID, err := models.GetUserIDFromSession(r) // Get the logged-in user ID
 	if err != nil {
 		http.Error(w, "Please log in to perform this action", http.StatusUnauthorized)
@@ -58,5 +59,5 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/home", http.StatusSeeOther)
+	http.Redirect(w, r, "/comments?post_id="+postID, http.StatusSeeOther)
 }
