@@ -56,7 +56,12 @@ footer {
     display: flex;
     gap: 10px; /* Add spacing between the buttons */
     margin-top: 10px; /* Add space above the like/dislike buttons */
+
+    /* Center the .likes-dislikes div */
+    justify-content: center;
+    padding: 5px;
 }
+
 
 .likes-dislikes form {
     margin: 0; /* Remove default form margin */
