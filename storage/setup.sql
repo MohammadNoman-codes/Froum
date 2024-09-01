@@ -73,23 +73,3 @@ CREATE TABLE IF NOT EXISTS sessions (
     expires_at DATETIME NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/* Testing it ~Mrfjm */
--- CommentLikes Table (For comments only)
-CREATE TABLE IF NOT EXISTS comment_likes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    comment_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (comment_id) REFERENCES comments(id)
-);
-
--- CommentDislikes Table (For comments only)
-CREATE TABLE IF NOT EXISTS comment_dislikes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    comment_id INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (comment_id) REFERENCES comments(id)
-);
