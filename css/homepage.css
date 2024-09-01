@@ -81,3 +81,46 @@ footer {
 .likes-dislikes button:hover {
     background-color: #2980b9;
 }
+
+/*Filter css*/
+
+/* Filter section styles */
+.filter {
+    background-color: #f1f1f1; /* Light background color for the filter section */
+    padding: 15px; /* Padding around the filter section */
+    border-radius: 8px; /* Rounded corners for a softer look */
+    margin: 20px 0; /* Space above and below the filter section */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    width: 300px;
+}
+
+.filter form {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Align items vertically in the center */
+}
+
+.filter label {
+    margin-right: 10px; /* Space between label and select dropdown */
+    font-weight: bold; /* Make the label text bold */
+}
+
+.filter select {
+    padding: 8px; /* Space inside the select dropdown */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners for the dropdown */
+    margin-right: 10px; /* Space between dropdown and button */
+}
+
+.filter button {
+    padding: 8px 16px; /* Space inside the button */
+    background-color: #007bff; /* Primary button color */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 4px; /* Rounded corners for the button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.filter button:hover {
+    background-color: #0056b3; /* Darker color on hover */
+}
