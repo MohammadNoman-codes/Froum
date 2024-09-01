@@ -13,7 +13,7 @@ func CommentDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentID := r.FormValue("ID")
+	commentID := r.FormValue("ID") // Use "ID" for comment identifier
 	postID := r.FormValue("post_id")
 	userID, err := models.GetUserIDFromSession(r) // Get the logged-in user ID
 	if err != nil {

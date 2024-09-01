@@ -12,7 +12,7 @@ func CommentUnDislikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commentID := r.FormValue("comment_id")
+	commentID := r.FormValue("ID") // Use "ID" for comment identifier
 	postID := r.FormValue("post_id")
 	userID, err := models.GetUserIDFromSession(r) // Get the logged-in user ID
 	if err != nil {
@@ -27,7 +27,7 @@ func CommentUnDislikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	_, err = db.Exec("DELETE FROM comment_dislikes WHERE user_id = ? AND comment_id = ?", userID, commentID)
+	_, err = db.Exec("DELETE FROM dislikes WHERE user_id = ? AND comment_id = ?", userID, commentID)
 	if err != nil {
 		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
 		return
