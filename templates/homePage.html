@@ -7,7 +7,6 @@
     <title>My Website</title>
     <link rel="stylesheet" href="../css/homepage.css">
     <link rel="stylesheet" href="../css/cards.css"> <!-- New CSS file for cards -->
-    
 </head>
 
 <body>
@@ -30,14 +29,13 @@
                 <select id="category" name="category">
                     <option value="" {{if eq .SelectedCategory "" }}selected{{end}}>All</option>
                     <option value="sports" {{if eq .SelectedCategory "sports" }}selected{{end}}>Sports</option>
-                    <option value="entertainment" {{if eq .SelectedCategory "entertainment" }}selected{{end}}>
-                        Entertainment</option>
+                    <option value="entertainment" {{if eq .SelectedCategory "entertainment" }}selected{{end}}>Entertainment</option>
                     <option value="food" {{if eq .SelectedCategory "food" }}selected{{end}}>Food</option>
                     <option value="cars" {{if eq .SelectedCategory "cars" }}selected{{end}}>Cars</option>
-                    <option value="technology" {{if eq .SelectedCategory "technology" }}selected{{end}}>Technology
-                    </option>
+                    <option value="technology" {{if eq .SelectedCategory "technology" }}selected{{end}}>Technology</option>
                     <option value="music" {{if eq .SelectedCategory "music" }}selected{{end}}>Music</option>
                     <option value="travel" {{if eq .SelectedCategory "travel" }}selected{{end}}>Travel</option>
+                    <option value="liked" {{if eq .SelectedCategory "liked" }}selected{{end}}>Liked Posts</option>
                 </select>
                 <button type="submit">Apply Filter</button>
             </form>

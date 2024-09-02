@@ -32,6 +32,7 @@ func FetchPosts(userID int, category string) ([]Post, error) {
 
     var rows *sql.Rows
     if category == "" {
+        // Fetch all posts
         rows, err = db.Query(`
             SELECT posts.id, posts.title, posts.content, 
                    (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count, 
@@ -39,7 +40,19 @@ func FetchPosts(userID int, category string) ([]Post, error) {
                    EXISTS (SELECT 1 FROM likes WHERE post_id = posts.id AND user_id = ?) AS user_has_liked,
                    EXISTS (SELECT 1 FROM dislikes WHERE post_id = posts.id AND user_id = ?) AS user_has_disliked
             FROM posts`, userID, userID)
+    } else if category == "liked" {
+        // Fetch posts that the user has liked
+        rows, err = db.Query(`
+            SELECT posts.id, posts.title, posts.content, 
+                   (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count, 
+                   (SELECT COUNT(*) FROM dislikes WHERE post_id = posts.id) AS dislikes_count,
+                   EXISTS (SELECT 1 FROM likes WHERE post_id = posts.id AND user_id = ?) AS user_has_liked,
+                   EXISTS (SELECT 1 FROM dislikes WHERE post_id = posts.id AND user_id = ?) AS user_has_disliked
+            FROM posts 
+            JOIN likes ON posts.id = likes.post_id 
+            WHERE likes.user_id = ?`, userID, userID, userID)
     } else {
+        // Fetch posts by category
         rows, err = db.Query(`
             SELECT posts.id, posts.title, posts.content, 
                    (SELECT COUNT(*) FROM likes WHERE post_id = posts.id) AS likes_count, 
@@ -72,6 +85,7 @@ func FetchPosts(userID int, category string) ([]Post, error) {
 
     return posts, nil
 }
+
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodGet {
