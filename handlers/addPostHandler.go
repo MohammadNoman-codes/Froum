@@ -6,6 +6,7 @@ import (
 	"forum/models"
 	"html/template"
 	"net/http"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -27,9 +28,9 @@ func AddPostHandler(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	case http.MethodPost:
 		// Process the form submission
-		title := r.FormValue("title")
-		content := r.FormValue("content")
-		category := r.FormValue("category") // Get the category from the form
+		title := strings.TrimSpace(r.FormValue("title"))
+		content := strings.TrimSpace(r.FormValue("content"))
+		category := strings.TrimSpace(r.FormValue("category"))
 
 		if title == "" || content == "" || category == "" {
 			http.Error(w, "400: Bad Request (Title, Content, or Category Missing)", http.StatusBadRequest)
