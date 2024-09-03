@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -148,7 +149,12 @@ func AddCommentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	postID := r.FormValue("post_id")
-	content := r.FormValue("content")
+	content := strings.TrimSpace(r.FormValue("content"))
+
+	if content == "" {
+		http.Error(w, "400: Bad Request - Content cannot be empty", http.StatusBadRequest)
+		return
+	}
 
 	db, err := sql.Open("sqlite3", "./storage/storage.db")
 	if err != nil {

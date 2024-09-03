@@ -7,6 +7,27 @@
     <link rel="stylesheet" href="../css/homepage.css">
     <link rel="stylesheet" href="../css/cards.css">
     <link rel="stylesheet" href="../css/comments.css"> 
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var contentField = document.getElementById("content");
+            var contentError = document.getElementById("contentError");
+    
+            contentField.onblur = function() {
+                var trimmedContent = contentField.value.trim();
+                if (trimmedContent === "") {
+                    contentError.textContent = "Content cannot be empty!";
+                    contentError.style.color = "red";
+                    contentField.focus();
+                } else {
+                    contentError.textContent = ""; // Clear the error message if content is valid
+                }
+            };
+        });
+    </script>
+
+    
 </head>
 <body>
     <header>
@@ -69,7 +90,8 @@
             <h2>Add a Comment</h2>
             <form method="post" action="/addcomment">
                 <input type="hidden" name="post_id" value="{{.PostID}}">
-                <textarea name="content" rows="5" placeholder="Write your comment here..." required></textarea>
+                <textarea id="content" name="content" rows="5" placeholder="Write your comment here..." required></textarea>
+                <div id="contentError" class="error-message"></div> <!-- Error message container -->
                 <button type="submit">Comment</button>
             </form>
         </section>
