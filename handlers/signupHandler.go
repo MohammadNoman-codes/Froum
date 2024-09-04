@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	"net/http"
-
 	"forum/models"
+	"net/http"
+	"strings"
 )
 
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
@@ -13,12 +13,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := strings.trimSpace(r.FormValue("email"))
-	username :=strings.trimSpace( r.FormValue("username"))
-	password := strings.trimSpace( r.FormValue("password"))
+	email := strings.TrimSpace(r.FormValue("email"))
+	username := strings.TrimSpace(r.FormValue("username"))
+	password := strings.TrimSpace(r.FormValue("password"))
 
-	if email || username || password === "" {
-		http.Error (w, "can not have empty fields please enter the data into it", http.statusBadRequest)
+	if email == "" || username == "" || password == "" {
+		http.Error(w, "can not have empty fields please enter the data into it", http.StatusBadRequest)
 		return
 	}
 
