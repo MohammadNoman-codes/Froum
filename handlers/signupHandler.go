@@ -13,9 +13,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	email := r.FormValue("email")
-	username := r.FormValue("username")
-	password := r.FormValue("password")
+	email := strings.trimSpace(r.FormValue("email"))
+	username :=strings.trimSpace( r.FormValue("username"))
+	password := strings.trimSpace( r.FormValue("password"))
+
+	if email || username || password === "" {
+		http.Error (w, "can not have empty fields please enter the data into it", http.statusBadRequest)
+		return
+	}
 
 	err := models.CreateUser(email, username, password)
 	if err != nil {
