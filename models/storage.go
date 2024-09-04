@@ -56,6 +56,27 @@ func CreateUser(email, username, password string) error {
 	return nil
 }
 
+func Dublicate(db *sql.DB, userID int) error {
+	// Query to find an active session for the user
+	var sessionID string
+	var expiryTime time.Time
+	err := db.QueryRow("SELECT session_id, expires_at FROM sessions WHERE user_id = ? AND expires_at > ?", userID, time.Now()).Scan(&sessionID, &expiryTime)
+	if err != nil && err != sql.ErrNoRows {
+		return fmt.Errorf("failed to check existing session: %v", err)
+	}
+
+	// If an active session exists, delete it
+	if sessionID != "" && expiryTime.After(time.Now()) {
+		_, err := db.Exec("DELETE FROM sessions WHERE session_id = ?", sessionID)
+		if err != nil {
+			return fmt.Errorf("failed to delete existing session: %v", err)
+		}
+	}
+
+	return nil
+}
+
+// AuthenticateUser checks the user's credentials and creates a session if valid.
 func AuthenticateUser(email, password string, w http.ResponseWriter) (bool, error) {
 	db, err := sql.Open("sqlite3", "./storage/storage.db")
 	if err != nil {
@@ -78,6 +99,12 @@ func AuthenticateUser(email, password string, w http.ResponseWriter) (bool, erro
 		return false, nil // Passwords do not match
 	}
 
+	// Call the Dublicate function to handle any existing active sessions
+	err = Dublicate(db, userID)
+	if err != nil {
+		return false, fmt.Errorf("failed to handle duplicate session: %v", err)
+	}
+
 	// Generate a session ID
 	sessionID := generateSessionID()
 
@@ -97,7 +124,6 @@ func AuthenticateUser(email, password string, w http.ResponseWriter) (bool, erro
 
 	return true, nil // Authentication and session creation successful
 }
-
 func generateSessionID() string {
 	bytes := make([]byte, 16)
 	rand.Read(bytes)
@@ -136,17 +162,17 @@ func GetUserIDFromSession(r *http.Request) (int, error) {
 }
 
 func HasUserLikedPost(userID, postID int) (bool, error) {
-    db, err := sql.Open("sqlite3", "./storage/storage.db")
-    if err != nil {
-        return false, err
-    }
-    defer db.Close()
+	db, err := sql.Open("sqlite3", "./storage/storage.db")
+	if err != nil {
+		return false, err
+	}
+	defer db.Close()
 
-    var count int
-    err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = ?", userID, postID).Scan(&count)
-    if err != nil {
-        return false, err
-    }
+	var count int
+	err = db.QueryRow("SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = ?", userID, postID).Scan(&count)
+	if err != nil {
+		return false, err
+	}
 
-    return count > 0, nil
+	return count > 0, nil
 }

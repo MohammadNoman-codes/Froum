@@ -9,7 +9,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	// Only allow GET requests
 	if r.Method == "GET" {
 		// Serve error page if the request path is not "/"
-		if r.URL.Path != "/" {
+		if r.URL.Path != "/" && r.URL.Path != "/login" {
 			t, _ := template.ParseFiles("templates/error.html")
 			t.Execute(w, http.StatusNotFound)
 			return
