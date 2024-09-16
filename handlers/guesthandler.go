@@ -15,7 +15,7 @@ func GuestPageHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/guest" {
 		t, err := template.ParseFiles("templates/error.html")
 		if err != nil {
-			http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+			http.Error(w, "500: Internal Server Error This is the error", http.StatusInternalServerError)
 			return
 		}
 		t.Execute(w, nil)
@@ -24,16 +24,16 @@ func GuestPageHandler(w http.ResponseWriter, r *http.Request) {
 
 	category := r.URL.Query().Get("category")
 
-	t, err := template.ParseFiles("templates/guestPage.html")
+	t, err := template.ParseFiles("templates/guestpage.html")
 	if err != nil {
-		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "500: Internal Server Error this is ", http.StatusInternalServerError)
 		return
 	}
 
 	// Use a dummy user ID for fetching posts without user-specific like/dislike data
 	posts, err := FetchPosts(0, category)
 	if err != nil {
-		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "500: Internal Server Error maybe this one ", http.StatusInternalServerError)
 		return
 	}
 
